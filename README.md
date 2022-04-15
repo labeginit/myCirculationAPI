@@ -40,7 +40,7 @@ Creates a user with a unique email address<br>
 >        "password": "password"<br>
 >    }<br>
 
-### Example of such a request<br>
+### Example of such request<br>
 >localhost:3000/users?email=mail@gmail.com&firstName=Liliia&lastName=Allansson&birthDate=1998-12-10&password=mypass <br>
 
 ### Response:<br>
@@ -51,7 +51,7 @@ Creates a user with a unique email address<br>
 
 Returns a single user by email address and password<br>
 
-### Example of such a request<br>
+### Example of such request<br>
 
 >localhost:3000/users/mymail@gmail.com?password=mypass<br>
 
@@ -70,7 +70,7 @@ Returns a single user by email address and password<br>
 
 Will return all records for a specified user.<br>
 
-### Example of such a request<br>
+### Example of such request<br>
 
 >localhost:3000/records/62596360a3796f2fb417497b<br>
 
@@ -103,7 +103,7 @@ Will return all records for a specified user.<br>
 
 Adds a health status record for a specified user. Returns evaluation of current health status of the user.<br>
 
-### Example of such a request<br>
+### Example of such request<br>
 
 >localhost:3000/records/62596360a3796f2fb417497b?systolic=60&diastolic=90&heartRate=65<br>
 
