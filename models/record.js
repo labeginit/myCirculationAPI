@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
 const recordSchema = new schema({
+    userID:{
+        type: String,
+        required: true 
+    },
     systolic:{
         type: Number,
         required: true 

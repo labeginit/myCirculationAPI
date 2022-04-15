@@ -36,7 +36,51 @@ app.post('/users', function(req, res) {
                 email: req.query.email,
                 firstName: req.query.firstName,
                 lastName: req.query.lastName,
-                birthDate: req.query.birthDate
+                birthDate: req.query.birthDate,
+                password: req.query.password
+            });
+            
+            user.save()
+            .then((result) => {
+                res.status(200);
+                res.send(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+            })
+            .catch((e) => {
+            res.status(500);
+            res.send(e);
+        });
+        } else {
+            res.status(500);
+            res.send('User exists');
+        }
+    })
+});
+
+// get a single user by email address and password
+// localhost:3000/users/liliyameister@gmail.com?password=mypass
+app.get('/users/:email', function(req, res){  
+    User.find({email:req.params.email, password:req.query.password}).then((result) =>{
+        if (result != ''){
+            res.status(200);
+            res.send(result[0]);
+        } else {
+            res.status(404);
+            res.send('User name of Password is incorrect');
+        }
+    })
+});
+
+// add a new user with a check for duplicates
+//localhost:3000/users?email=mail@gmail.com&firstName=Liliia&lastName=Allansson&birthDate=1998-12-10&password=mypass
+// response: "62596360a3796f2fb417497b"
+app.post('/records', function(req, res) {
+    User.find({email:req.query.email}).then((result) =>{
+        if (result == ''){
+            const user = new Record({
+                userID: req.query.userID,
+                systolic: req.query.systolic,
+                diastolic: req.query.diastolic,
+                heartRate: req.query.heartRate,
             });
             
             user.save()
@@ -52,22 +96,3 @@ app.post('/users', function(req, res) {
         }
     })
 });
-
-// get a single user by email address
-app.get('/users/:email', function(req, res){  
-    User.find({email:req.params.email}).then((result) =>{
-        if (result != ''){
-            res.status(200);
-            res.send(result[0]);
-        } else {
-            res.status(404);
-            res.send('No such user');
-        }
-    })
-});
-
- /*const user = new User({
-        email: 'lili@gmail.com',
-        firstName: 'Liliia',
-        lastName: 'Allans',
-        birthDate: '10/12/1900'});*/
