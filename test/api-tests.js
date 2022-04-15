@@ -10,6 +10,7 @@ describe('Test a GET request for /users', function (){
         .get('/users')
         .set('Accept', 'application/json')
         .expect(200, done);
+        
     });
 });
 
@@ -21,8 +22,7 @@ describe('Test a POST request for /users', function(){
                 firstName: 'Liliia',
                 lastName: 'Allans',
                 birthDate: '10/12/1900'})
-        ).expect(response.status).toBe(200)
-        .expect(response.body).not('');
+        ).expect(200, done);
     });
     
 });
