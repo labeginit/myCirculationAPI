@@ -112,7 +112,7 @@ app.get('/records/:userID', function (req, res) {
     Record.find({ userID: req.params.userID }).then((result) => {
         if (result != '') {
             res.status(200);
-            res.send(result[0]);
+            res.send(result);
         } else {
             res.status(404);
             res.send('No records found');
