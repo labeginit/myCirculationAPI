@@ -15,6 +15,11 @@ mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
 const Record = require('./models/record');
 const User = require('./models/user');
 
+app.get('/', (req, res) => {
+    res.redirect('/records/:userID');
+});
+
+// get a list of users
 app.get('/users', function(req, res) { 
     User.find()
     .then((result) => {
@@ -23,19 +28,43 @@ app.get('/users', function(req, res) {
     }).catch((e) => console.log(e));
 });
 
+// add a new user with a check for duplicates
 app.post('/users', function(req, res) {
-    const user = new User({
-        email: req.query.email,
-        firstName: req.query.firstName,
-        lastName: req.query.lastName,
-        birthDate: req.query.birthDate
-    });
-    user.save()
-    .then((result) => {res.status(200)})
-    .catch((e) => {
-    console.log;
-    res.status(500)});
-})
+    User.find({email:req.query.email}).then((result) =>{
+        if (result == ''){
+            const user = new User({
+                email: req.query.email,
+                firstName: req.query.firstName,
+                lastName: req.query.lastName,
+                birthDate: req.query.birthDate
+            });
+            
+            user.save()
+            .then((result) => {
+                res.status(200);
+                res.send(result);
+            })
+            .catch((e) => {
+            res.status(500)});
+        } else {
+            res.status(500);
+            res.send('User exists');
+        }
+    })
+});
+
+// get a single user by email address
+app.get('/users/:email', function(req, res){  
+    User.find({email:req.params.email}).then((result) =>{
+        if (result != ''){
+            res.status(200);
+            res.send(result[0]);
+        } else {
+            res.status(404);
+            res.send('No such user');
+        }
+    })
+});
 
  /*const user = new User({
         email: 'lili@gmail.com',
