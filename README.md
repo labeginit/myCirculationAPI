@@ -12,7 +12,7 @@ Returns a list of all users<br>
 >        "firstName": "Name",<br>
 >        "lastName": "Surname",<br>
 >        "birthDate": "yyyy-MM-dd",<br>
->        "password": "* * *",<br>
+>        "password": "some password",<br>
 >        "__v": 0<br>
 >    },<br>
 >    {<br>
@@ -21,7 +21,7 @@ Returns a list of all users<br>
 >        "firstName": "Name",<br>
 >        "lastName": "Surname",<br>
 >        "birthDate": "yyyy-MM-dd",<br>
->        "password": "* * *",<br>
+>        "password": "some password",<br>
 >        "__v": 0<br>
 >    }<br>
 >]<br>
@@ -40,9 +40,9 @@ Creates a user with a unique email address<br>
 >    }<br>
 
 ### Response:<br>
-"62596360a3796f2fb417497b"   - an ID of the newly cteated record<br>
+>"62596360a3796f2fb417497b"   - an ID of the newly created record<br>
 
-## End point */records/<userID>* method GET
+## End point */records/[userID]* method GET
 
 Will return all records for a specified user.<br>
 ### Response:<br>
