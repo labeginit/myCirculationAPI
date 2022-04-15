@@ -2,23 +2,23 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
 const recordSchema = new schema({
-    userID:{
+    userID: {
         type: String,
-        required: true 
+        required: true
     },
-    systolic:{
-        type: Number,
-        required: true 
-    },
-    diastolic:{
+    systolic: {
         type: Number,
         required: true
     },
-    heartRate:{
+    diastolic: {
+        type: Number,
+        required: true
+    },
+    heartRate: {
         type: Number,
         required: true
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 const Record = mongoose.model('Record', recordSchema) // the collection name in the DB
 module.exports = Record;

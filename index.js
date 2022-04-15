@@ -77,17 +77,29 @@ app.get('/users/:email', function (req, res) {
 // adds a record for a specified user ID. All properties are required
 //localhost:3000/records/62596360a3796f2fb417497b?systolic=60&diastolic=90&heartRate=65
 app.post('/records/:userID', function (req, res) {
-    const user = new Record({
+    const record = new Record({
         userID: req.params.userID,
         systolic: req.query.systolic,
         diastolic: req.query.diastolic,
         heartRate: req.query.heartRate,
     });
 
-    user.save()
+    record.save()
         .then((result) => {
             res.status(200);
-            res.send(result);
+            //calculate the age of user and answer how good the health condition is
+            User.findById(req.params.userID).then((result2) => {
+                if (result2 != null) {
+                    console.log(result2);
+                    const birth = new Date(result2.birthDate);
+                    const postDate = result.createdAt;
+                    let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
+                    res.send(estimateRisk(age, req.query.systolic, req.query.diastolic));
+                } else {
+                    res.status(404);
+                    res.send('User does not exist');
+                }
+            })
         })
         .catch((e) => {
             res.status(500)
@@ -97,7 +109,7 @@ app.post('/records/:userID', function (req, res) {
 // get a list of records by user ID
 //localhost:3000/records/62596360a3796f2fb417497b
 app.get('/records/:userID', function (req, res) {
-    Record.find({ userID: req.params.userID}).then((result) => {
+    Record.find({ userID: req.params.userID }).then((result) => {
         if (result != '') {
             res.status(200);
             res.send(result[0]);
@@ -108,3 +120,32 @@ app.get('/records/:userID', function (req, res) {
     })
 });
 
+// Source https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
+function estimateRisk(age, systolic, diastolic) {
+    console.log(age);
+    let verdict = 'The preassure is ubnormal. Try to calm down and test again.';
+    if ((2 < age) && (age <= 13)) {
+        if (((80 <= systolic) && (systolic <= 120)) && ((40 <= diastolic) && (diastolic <= 80))) {
+            verdict = 'Normal blood pressure';
+        }
+    }
+    else if ((13 < age) && (age <= 18)) {
+        if (((90 <= systolic) && (systolic <= 120)) && ((50 <= diastolic) && (diastolic <= 80))) {
+            verdict = 'Normal blood pressure';
+        }
+    } else if (age <= 40) {
+        if ((95 <= systolic) && (systolic <= 135) && (60 <= diastolic) && (diastolic <= 80)) {
+            console.log('inside values');
+            verdict = 'Normal blood pressure';
+        }
+    } else if (age <= 60) {
+        if (((110 <= systolic) && (systolic <= 145)) && ((70 <= diastolic) && (diastolic <= 90))) {
+            verdict = 'Normal blood pressure';
+        }
+    } else if (age <= 130) {
+        if (((95 <= systolic) && (systolic <= 145)) && ((70 <= diastolic) && (diastolic <= 90))) {
+            verdict = 'Normal blood pressure';
+        }
+    }
+    return verdict;
+}
