@@ -26,7 +26,10 @@ app.get('/users', function (req, res) {
         .then((result) => {
             res.status(200);
             res.send(result);
-        }).catch((e) => console.log(e));
+        }).catch((e) => {
+            res.status(500);
+            res.send(e);
+        });
 });
 
 // add a new user with a check for duplicates
@@ -90,7 +93,6 @@ app.post('/records/:userID', function (req, res) {
             //calculate the age of user and answer how good the health condition is
             User.findById(req.params.userID).then((result2) => {
                 if (result2 != null) {
-                    console.log(result2);
                     const birth = new Date(result2.birthDate);
                     const postDate = result.createdAt;
                     let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
