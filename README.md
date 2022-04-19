@@ -26,22 +26,12 @@ Returns a list of all users<br>
 >    }<br>
 >]<br>
 
-## End point */users* method POST<br>
+## End point */register* method POST<br>
 
-Creates a user with a unique email address<br>
-
-### Receives an Object of standard<br>
-
->    {<br>
->        email: "mail@gmail.com",<br>
->        firstName: "Name",<br>
->        lastName: "Surname",<br>
->        birthDate: "yyyy-MM-dd",<br>
->        password: "password"<br>
->    }<br>
+Creates a user with a unique email address. A hashed version of the password is saved in the DB<br>
 
 ### Example of such request<br>
->lhttps://obscure-bayou-38424.herokuapp.com/users + object <br>
+>lhttps://obscure-bayou-38424.herokuapp.com/register + object <br>
 >   {<br>
 >        email: "xxxx@email",<br>
 >        firstName: "firstName",<br>
@@ -54,13 +44,19 @@ Creates a user with a unique email address<br>
 >"62596360a3796f2fb417497b"   - the ID of the newly created record<br>
 
 
-## End point */users/[email]* method GET<br>
+## End point */login* method POST<br>
 
-Returns a single user by email address and password<br>
+Returns a single user by email address and password (status 200 or a message (status 404)<br>
 
 ### Example of such request<br>
 
->https://obscure-bayou-38424.herokuapp.com/users/mymail@gmail.com?password=mypass<br>
+>https://obscure-bayou-38424.herokuapp.com/login + object<br>
+
+>{<br>
+>    "email": "mymail@gmail.com",<br>
+>    "password": "password"<br>
+>}<br>
+
 
 ### Response<br>
 >{<br>
@@ -69,11 +65,9 @@ Returns a single user by email address and password<br>
 >    "firstName": "Name",<br>
 >    "lastName": "Surname",<br>
 >    "birthDate": "yyyy-MM-dd",<br>
->    "password": "mypass",<br>
->    "__v": 0<br>
 >}<br>
 
-## End point */records/[userID]* method GET<br>
+## End point */records/[user_id]* method GET<br>
 
 Will return all records for a specified user.<br>
 
@@ -106,7 +100,7 @@ Will return all records for a specified user.<br>
 >    }<br>
 >]<br>
 
-## End point */records/[userID]* method POST<br>
+## End point */records/[user_id]* method POST<br>
 
 Adds a health status record for a specified user. Returns evaluation of current health status of the user.<br>
 
