@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
 
 app.get('/', (req, res) => {
     res.status(404);
-    res.send('Page does not exist');
+    res.send('No default root available');
 });
 
 // get a list of users
@@ -132,7 +132,7 @@ app.get('/records/:userID', function (req, res) {
     })
 });
 
-// Analizys is based on data from https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
+// Analysis is based on data from https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
 function estimateRisk(age, systolic, diastolic) {
     let verdict = 'Your preassure is ubnormal. Try to calm down and test again.';
     if ((2 < age) && (age <= 13)) {
