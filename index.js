@@ -87,35 +87,6 @@ app.get('/users/:email', function (req, res) {
 
 // adds a record for a specified user ID. All properties are required
 //https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
-/*app.post('/records/:userID', function (req, res) {
-    const record = new Record({
-        userID: req.params.userID,
-        systolic: req.query.systolic,
-        diastolic: req.query.diastolic,
-        heartRate: req.query.heartRate,
-    });
-
-    record.save()
-        .then((result) => {
-            res.status(200);
-            //calculate the age of user and answer how good the health condition is
-            User.findById(req.params.userID).then((result2) => {
-                if (result2 != null) {
-                    const birth = new Date(result2.birthDate);
-                    const postDate = result.createdAt;
-                    let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
-                    res.send(estimateRisk(age, req.query.systolic, req.query.diastolic));
-                } else {
-                    res.status(404);
-                    res.send('User does not exist');
-                }
-            })
-        })
-        .catch((e) => {
-            res.status(500)
-        });
-});*/
-
 app.post('/records/:userID', function (req, res) {
     const record = new Record({
         userID: req.params.userID,
@@ -159,7 +130,7 @@ app.get('/records/:userID', function (req, res) {
     })
 });
 
-// Source https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
+// Analizys is based on data from https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
 function estimateRisk(age, systolic, diastolic) {
     let verdict = 'Your preassure is ubnormal. Try to calm down and test again.';
     if ((2 < age) && (age <= 13)) {

@@ -33,18 +33,25 @@ Creates a user with a unique email address<br>
 ### Receives an Object of standard<br>
 
 >    {<br>
->        "email": "mail@gmail.com",<br>
->        "firstName": "Name",<br>
->        "lastName": "Surname",<br>
->        "birthDate": "yyyy-MM-dd",<br>
->        "password": "password"<br>
+>        email: "mail@gmail.com",<br>
+>        firstName: "Name",<br>
+>        lastName: "Surname",<br>
+>        birthDate: "yyyy-MM-dd",<br>
+>        password: "password"<br>
 >    }<br>
 
 ### Example of such request<br>
->localhost:3000/users?email=mail@gmail.com&firstName=Liliia&lastName=Allansson&birthDate=1998-12-10&password=mypass <br>
+>lhttps://obscure-bayou-38424.herokuapp.com/users + object <br>
+>   {<br>
+>        email: "xxxx@email",<br>
+>        firstName: "firstName",<br>
+>        lastName: "lastName",<br>
+>        birthDate: "yyyy-MM-dd",<br>
+>        password: "password"<br>
+>   }<br>
 
 ### Response<br>
->"62596360a3796f2fb417497b"   - an ID of the newly created record<br>
+>"62596360a3796f2fb417497b"   - the ID of the newly created record<br>
 
 
 ## End point */users/[email]* method GET<br>
@@ -53,18 +60,18 @@ Returns a single user by email address and password<br>
 
 ### Example of such request<br>
 
->localhost:3000/users/mymail@gmail.com?password=mypass<br>
+>https://obscure-bayou-38424.herokuapp.com/users/mymail@gmail.com?password=mypass<br>
 
 ### Response<br>
->{
->    "_id": "62596177438505704b60b2b2",
->    "email": "mymail@gmail.com",
->    "firstName": "Name",
->    "lastName": "Surname",
->    "birthDate": "yyyy-MM-dd",
->    "password": "mypass",
->    "__v": 0
->}
+>{<br>
+>    "_id": "62596177438505704b60b2b2",<br>
+>    "email": "mymail@gmail.com",<br>
+>    "firstName": "Name",<br>
+>    "lastName": "Surname",<br>
+>    "birthDate": "yyyy-MM-dd",<br>
+>    "password": "mypass",<br>
+>    "__v": 0<br>
+>}<br>
 
 ## End point */records/[userID]* method GET<br>
 
@@ -72,7 +79,7 @@ Will return all records for a specified user.<br>
 
 ### Example of such request<br>
 
->localhost:3000/records/625987150ae68c9cb02e8f1f<br>
+>https://obscure-bayou-38424.herokuapp.com/records/625987150ae68c9cb02e8f1f<br>
 
 ### Response<br>
 >[<br>
@@ -105,8 +112,14 @@ Adds a health status record for a specified user. Returns evaluation of current 
 
 ### Example of such request<br>
 
->localhost:3000/records/62596360a3796f2fb417497b?systolic=60&diastolic=90&heartRate=65<br>
+>https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b' + object <br>
+>{<br>
+>    systolic: 87,<br>
+>    diastolic: 65,<br>
+>    heartRate: 72<br>
+>}<br>
 
 ### Response<br>
 >"You might need to contact a doctor" <br>
+>"Your preassure is ubnormal. Try to calm down and test again." <br>
 >Or "Normal blood pressure", etc.<br>
