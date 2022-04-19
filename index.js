@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 
 const db = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority';
+const saltRounds = 8;
 
 mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result) => console.log('DB connection established'))
@@ -25,6 +26,8 @@ app.use(function (req, res, next) {
     next();
 });
 
+
+// End points
 app.get('/', (req, res) => {
     res.status(404);
     res.send('No default root available');
