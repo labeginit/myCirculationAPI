@@ -133,9 +133,16 @@ app.post('/login', function (req, res) {
         if (result != '') {
             bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
                 if (result2 == true) {
-                    delete result[0].password;
+                    delete result[0].password; // deletion does not work
+                    const obj = {
+                        email: result[0].email,
+                        firstName: result[0].firstName,
+                        lastName: result[0].lastName,
+                        birthDate: result[0].birthDate
+                    }
                     res.status(200);
-                    res.send(result[0]);
+                    //res.send(result[0]);
+                    res.send(obj);
                 } else {
                     res.status(404);
                     res.send('User name or Password is incorrect');
