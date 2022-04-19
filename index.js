@@ -42,7 +42,7 @@ app.get('/users', function (req, res) {
 // add a new user with a check for duplicates
 //localhost:3000/users?email=mail@gmail.com&firstName=Liliia&lastName=Allansson&birthDate=1998-12-10&password=mypass
 // response: "62596360a3796f2fb417497b"
-app.post('/users', function (req, res) {
+/*app.post('/users', function (req, res) {
     User.find({ email: req.query.email }).then((result) => {
         if (result == '') {
             const user = new User({
@@ -51,6 +51,33 @@ app.post('/users', function (req, res) {
                 lastName: req.query.lastName,
                 birthDate: req.query.birthDate,
                 password: req.query.password
+            });
+
+            user.save()
+                .then((result) => {
+                    res.status(200);
+                    res.send(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+                })
+                .catch((e) => {
+                    res.status(500);
+                    res.send(e);
+                });
+        } else {
+            res.status(500);
+            res.send('User exists');
+        }
+    })
+});*/
+
+app.post('/users', function (req, res) {
+    User.find({ email: req.body.email }).then((result) => {
+        if (result == '') {
+            const user = new User({
+                email: req.body.email,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                birthDate: req.body.birthDate,
+                password: req.body.password
             });
 
             user.save()
