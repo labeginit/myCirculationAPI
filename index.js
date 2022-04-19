@@ -40,7 +40,7 @@ app.get('/users', function (req, res) {
 });
 
 // add a new user with a check for duplicates
-//localhost:3000/users?email=mail@gmail.com&firstName=Liliia&lastName=Allansson&birthDate=1998-12-10&password=mypass
+//axios.post('https://obscure-bayou-38424.herokuapp.com/users', user)
 // response: "62596360a3796f2fb417497b"
 app.post('/users', function (req, res) {
     let user = null;
@@ -71,7 +71,7 @@ app.post('/users', function (req, res) {
 });
 
 // get a single user by email address and password
-// localhost:3000/users/liliyameister@gmail.com?password=mypass
+// https://obscure-bayou-38424.herokuapp.com/users/liliyameister@gmail.com?password=mypass
 app.get('/users/:email', function (req, res) {
     User.find({ email: req.params.email, password: req.query.password }).then((result) => {
         if (result != '') {
@@ -86,8 +86,8 @@ app.get('/users/:email', function (req, res) {
 
 
 // adds a record for a specified user ID. All properties are required
-//localhost:3000/records/62596360a3796f2fb417497b?systolic=60&diastolic=90&heartRate=65
-app.post('/records/:userID', function (req, res) {
+//https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
+/*app.post('/records/:userID', function (req, res) {
     const record = new Record({
         userID: req.params.userID,
         systolic: req.query.systolic,
@@ -114,10 +114,39 @@ app.post('/records/:userID', function (req, res) {
         .catch((e) => {
             res.status(500)
         });
+});*/
+
+app.post('/records/:userID', function (req, res) {
+    const record = new Record({
+        userID: req.params.userID,
+        systolic: req.body.systolic,
+        diastolic: req.body.diastolic,
+        heartRate: req.body.heartRate,
+    });
+
+    record.save()
+        .then((result) => {
+            res.status(200);
+            //calculate the age of user and answer how good the health condition is
+            User.findById(req.params.userID).then((result2) => {
+                if (result2 != null) {
+                    const birth = new Date(result2.birthDate);
+                    const postDate = result.createdAt;
+                    let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
+                    res.send(estimateRisk(age, req.body.systolic, req.body.diastolic));
+                } else {
+                    res.status(404);
+                    res.send('User does not exist');
+                }
+            })
+        })
+        .catch((e) => {
+            res.status(500)
+        });
 });
 
 // get a list of records by user ID
-//localhost:3000/records/62596360a3796f2fb417497b
+//https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
 app.get('/records/:userID', function (req, res) {
     Record.find({ userID: req.params.userID }).then((result) => {
         if (result != '') {
