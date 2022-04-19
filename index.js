@@ -3,6 +3,7 @@ const port = process.env.PORT || 3000;
 const express = require('express');
 const mongoose = require('mongoose');  //ODM (object document mapping) lib
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 const app = express();
 
 const db = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority';
@@ -71,6 +72,36 @@ app.post('/users', function (req, res) {
         }
     })
 });
+//add a new user with password scrumble
+app.post('/register', function (req, res) {
+    let user = null;
+    User.find({ email: req.body.email }).then((result) => {
+        if ((result == '') || (result == null)) {
+            user = new User({
+                email: req.body.email,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                birthDate: req.body.birthDate,
+                password: encrypt(req.body.password)
+            });
+            console.log(user.password);
+
+            user.save()
+                .then((result) => {
+                    res.status(200);
+                    res.json(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+                })
+                .catch((e) => {
+                    res.status(500);
+                    res.json(e);
+                });
+        } else {
+            res.status(200);
+            res.json('User exists');
+        }
+    })
+});
+
 
 // get a single user by email address and password
 // https://obscure-bayou-38424.herokuapp.com/users/liliyameister@gmail.com?password=mypass
@@ -171,4 +202,12 @@ function estimateRisk(age, systolic, diastolic) {
         }
     }
     return verdict;
+}
+
+
+function encrypt(password) {
+    const saltRounds = 8;
+    bcrypt.hash(password, saltRounds, function (err, hash) {
+        return hash;
+    });
 }
