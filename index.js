@@ -2,7 +2,7 @@ const port = process.env.PORT || 3000;
 
 const express = require('express');
 const mongoose = require('mongoose');  //ODM (object document mapping) lib
-
+const bodyParser = require("body-parser");
 const app = express();
 
 const db = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority';
@@ -15,6 +15,7 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 const Record = require('./models/record');
 const User = require('./models/user');
 
+app.use(bodyParser.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
