@@ -135,13 +135,13 @@ app.post('/login', function (req, res) {
                 if (result2 == true) {
                     delete result[0].password; // deletion does not work
                     const obj = {
+                        _id: result[0]._id,
                         email: result[0].email,
                         firstName: result[0].firstName,
                         lastName: result[0].lastName,
                         birthDate: result[0].birthDate
                     }
                     res.status(200);
-                    //res.send(result[0]);
                     res.send(obj);
                 } else {
                     res.status(404);
