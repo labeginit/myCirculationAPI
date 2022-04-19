@@ -210,7 +210,12 @@ function encrypt(password) {
     const saltRounds = 8;
     let newPass = '';
     bcrypt.hash(password, saltRounds, function (err, hash) {
-        newPass = hash;
+        console.log(err);
+        if (hash !== '') {
+            newPass = hash;
+        } else {
+            newPass = 'RFERVRVRT4554htyhYTRGRTGT';
+        }
     });
     return newPass;
 }
