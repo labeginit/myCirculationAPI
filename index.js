@@ -75,6 +75,7 @@ app.post('/users', function (req, res) {
 //add a new user with password scrumble
 app.post('/register', function (req, res) {
     let user = null;
+    const hash = encrypt(req.body.password);
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
             user = new User({
@@ -82,7 +83,7 @@ app.post('/register', function (req, res) {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 birthDate: req.body.birthDate,
-                password: encrypt(req.body.password)
+                password: hash
             });
             console.log(user.password);
 
@@ -207,7 +208,9 @@ function estimateRisk(age, systolic, diastolic) {
 
 function encrypt(password) {
     const saltRounds = 8;
+    let newPass = '';
     bcrypt.hash(password, saltRounds, function (err, hash) {
-        return hash;
+        newPass = hash;
     });
+    return newPass;
 }
