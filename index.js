@@ -2,7 +2,6 @@ const port = process.env.PORT || 3000;
 
 const express = require('express');
 const mongoose = require('mongoose');  //ODM (object document mapping) lib
-const bodyParser = require("body-parser");
 const app = express();
 
 const db = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority';
@@ -15,7 +14,8 @@ mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
 const Record = require('./models/record');
 const User = require('./models/user');
 
-app.use(bodyParser.json());
+app.use(express.json());
+
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -70,9 +70,10 @@ app.get('/users', function (req, res) {
 });*/
 
 app.post('/users', function (req, res) {
+    let user = null;
     User.find({ email: req.body.email }).then((result) => {
         if (result == '') {
-            const user = new User({
+            user = new User({
                 email: req.body.email,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -83,15 +84,16 @@ app.post('/users', function (req, res) {
             user.save()
                 .then((result) => {
                     res.status(200);
-                    res.send(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+                    res.json(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
                 })
                 .catch((e) => {
+                    console.log(user.email);
                     res.status(500);
-                    res.send(e);
+                    res.json(e);
                 });
         } else {
             res.status(500);
-            res.send('User exists');
+            res.json('User exists');
         }
     })
 });
