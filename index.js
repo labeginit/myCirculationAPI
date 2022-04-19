@@ -45,7 +45,7 @@ app.get('/users', function (req, res) {
 // add a new user with a check for duplicates
 //axios.post('https://obscure-bayou-38424.herokuapp.com/users', user)
 // response: "62596360a3796f2fb417497b"
-app.post('/users', function (req, res) {
+/*app.post('/users', function (req, res) {
     let user = null;
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
@@ -71,8 +71,11 @@ app.post('/users', function (req, res) {
             res.json('User exists');
         }
     })
-});
+});*/
+
 //add a new user with password scrumble
+//axios.post('https://obscure-bayou-38424.herokuapp.com/users', user)
+// response: "62596360a3796f2fb417497b"
 app.post('/register', function (req, res) {
     let user = null;
 
@@ -85,8 +88,8 @@ app.post('/register', function (req, res) {
                 birthDate: req.body.birthDate,
                 password: req.body.password
             });
-
-            encrypt(user);
+            // hash the password, replace password in the object with its hashed value, save it in the DB
+            encryptAndSave(user, res);
         } else {
             res.status(200);
             res.json('User exists');
@@ -197,12 +200,10 @@ function estimateRisk(age, systolic, diastolic) {
 }
 
 
-function encrypt(user) {
-    const saltRounds = 8;
-
+function encryptAndSave(user, res) {
     bcrypt.hash(user.password, saltRounds, function (err, hash) {
         user.password = hash;
-        console.log(user.password);
+
         user.save()
             .then((result) => {
                 res.status(200);
