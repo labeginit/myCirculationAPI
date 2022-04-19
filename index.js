@@ -26,6 +26,17 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use((error, req, res, next) => {
+    if (error) {
+        let result = {
+            _error: error + ''
+        };
+        res.json(result);
+    }
+    else {
+        next();
+    }
+});
 
 // End points
 app.get('/', (req, res) => {
@@ -114,6 +125,27 @@ app.get('/users/:email', function (req, res) {
         }
     })
 });
+// get a single user by email address and password
+app.post('/login', function (req, res) {
+    User.find({ email: req.body.email }).then((result) => {
+        if (result != '') {
+            bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
+                if (result2 == true) {
+                    delete result.password;
+                    res.status(200);
+                    res.send(result[0]);
+                } else {
+                    res.status(404);
+                    res.send('User name or Password is incorrect');
+                }
+            });
+        } else {
+            res.status(404);
+            res.send('User name or Password is incorrect');
+        }
+    })
+});
+
 
 
 // adds a record for a specified user ID. All properties are required
