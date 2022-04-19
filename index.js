@@ -2,6 +2,7 @@ const port = process.env.PORT || 3000;
 
 const express = require('express');
 const mongoose = require('mongoose');  //ODM (object document mapping) lib
+const cors = require('cors');
 const app = express();
 
 const db = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority';
@@ -15,6 +16,7 @@ const Record = require('./models/record');
 const User = require('./models/user');
 
 app.use(express.json());
+app.use(cors());
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
