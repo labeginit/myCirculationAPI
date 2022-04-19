@@ -72,7 +72,7 @@ Will return all records for a specified user.<br>
 
 ### Example of such request<br>
 
->localhost:3000/records/62596360a3796f2fb417497b<br>
+>localhost:3000/records/625987150ae68c9cb02e8f1f<br>
 
 ### Response<br>
 >[<br>
