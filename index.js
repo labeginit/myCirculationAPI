@@ -75,8 +75,7 @@ app.post('/users', function (req, res) {
 //add a new user with password scrumble
 app.post('/register', function (req, res) {
     let user = null;
-    const hash = encrypt(req.body.password);
-    console.log(hash);
+
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
             user = new User({
@@ -86,17 +85,8 @@ app.post('/register', function (req, res) {
                 birthDate: req.body.birthDate,
                 password: req.body.password
             });
-            console.log(hash);
 
-            user.save()
-                .then((result) => {
-                    res.status(200);
-                    res.json(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
-                })
-                .catch((e) => {
-                    res.status(500);
-                    res.json(e);
-                });
+            encrypt(user);
         } else {
             res.status(200);
             res.json('User exists');
@@ -207,16 +197,20 @@ function estimateRisk(age, systolic, diastolic) {
 }
 
 
-function encrypt(password) {
+function encrypt(user) {
     const saltRounds = 8;
-    let newPass = '';
-    bcrypt.hash(password, saltRounds, function (err, hash) {
-        console.log(err);
-        if (hash !== '') {
-            newPass = hash;
-        } else {
-            newPass = 'RFERVRVRT4554htyhYTRGRTGT';
-        }
+
+    bcrypt.hash(user.password, saltRounds, function (err, hash) {
+        user.password = hash;
+        console.log(user.password);
+        user.save()
+            .then((result) => {
+                res.status(200);
+                res.json(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+            })
+            .catch((e) => {
+                res.status(500);
+                res.json(e);
+            });
     });
-    return newPass;
 }
