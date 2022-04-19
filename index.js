@@ -76,6 +76,7 @@ app.post('/users', function (req, res) {
 app.post('/register', function (req, res) {
     let user = null;
     const hash = encrypt(req.body.password);
+    console.log(hash);
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
             user = new User({
@@ -83,9 +84,9 @@ app.post('/register', function (req, res) {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 birthDate: req.body.birthDate,
-                password: hash
+                password: req.body.password
             });
-            console.log(user.password);
+            console.log(hash);
 
             user.save()
                 .then((result) => {
