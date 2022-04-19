@@ -114,7 +114,7 @@ app.post('/register', function (req, res) {
 
 // get a single user by email address and password
 // https://obscure-bayou-38424.herokuapp.com/users/liliyameister@gmail.com?password=mypass
-app.get('/users/:email', function (req, res) {
+/*app.get('/users/:email', function (req, res) {
     User.find({ email: req.params.email, password: req.query.password }).then((result) => {
         if (result != '') {
             res.status(200);
@@ -124,14 +124,16 @@ app.get('/users/:email', function (req, res) {
             res.send('User name or Password is incorrect');
         }
     })
-});
+});*/
+
 // get a single user by email address and password
+// https://obscure-bayou-38424.herokuapp.com/login
 app.post('/login', function (req, res) {
     User.find({ email: req.body.email }).then((result) => {
         if (result != '') {
             bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
                 if (result2 == true) {
-                    delete result.password;
+                    delete result[0].password;
                     res.status(200);
                     res.send(result[0]);
                 } else {
