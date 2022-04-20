@@ -7,15 +7,15 @@ const recordSchema = new schema({
         required: true
     },
     systolic: {
-        type: Number,
+        type: Number, max: 250,
         required: true
     },
     diastolic: {
-        type: Number,
+        type: Number, max: 250,
         required: true
     },
     heartRate: {
-        type: Number,
+        type: Number, max: 220,
         required: true
     }
 }, { timestamps: true });

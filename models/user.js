@@ -7,11 +7,11 @@ const userSchema = new schema({
         required: true
     },
     firstName: {
-        type: String,
+        type: String, validate: /[a-z]/,
         required: true
     },
     lastName: {
-        type: String,
+        type: String, validate: /[a-z]/,
         required: true
     },
     birthDate: {
