@@ -35,10 +35,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use((error, req, res, next) => {
-    if (error) {
+app.use((_error, req, res, next) => {
+    if (_error) {
         let result = {
-            _error: error + ''
+            error: _error + ''
         };
         res.json(result);
     }
@@ -50,28 +50,32 @@ app.use((error, req, res, next) => {
 // End points
 app.get('/', (req, res) => {
     res.status(404);
-    res.send('No default root available');
+    res.send({ error: 'No default root available' });
 });
 
 // get a list of users
-// present for testing purposes, not supposed to be released in production
+// for testing purpose, not supposed to be released in production
 app.get('/users', function (req, res) {
-    User.find()
-        .then((result) => {
-            res.status(200);
-            res.send(result);
-        }).catch((e) => {
-            res.status(500);
-            res.send(e);
-        });
+    if (isAuthenticated(req)) {
+        User.find()
+            .then((result) => {
+                res.status(200);
+                res.send(result);
+            }).catch((e) => {
+                res.status(500);
+                res.send(e);
+            });
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
 });
 
 //add a new user with password scrumble
 //axios.post('https://obscure-bayou-38424.herokuapp.com/users', user)
 // response: "62596360a3796f2fb417497b"
 app.post('/register', function (req, res) {
-    let user = null;
-
+    let user;
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
             user = new User({
@@ -85,7 +89,7 @@ app.post('/register', function (req, res) {
             encryptAndSave(user, res);
         } else {
             res.status(200);
-            res.json('User exists');
+            res.json({ error: 'User exists' });
         }
     })
 });
@@ -110,12 +114,12 @@ app.post('/login', function (req, res) {
                     res.send(obj);
                 } else {
                     res.status(404);
-                    res.send('User name or Password is incorrect');
+                    res.send({ error: 'User name or Password is incorrect' });
                 }
             });
         } else {
             res.status(404);
-            res.send('User name or Password is incorrect');
+            res.send({ error: 'User name or Password is incorrect' });
         }
     })
 });
@@ -123,61 +127,103 @@ app.post('/login', function (req, res) {
 // sends the object of the current logged in user or an error
 //GET https://obscure-bayou-38424.herokuapp.com/login
 app.get('/login', function (req, res) {
-    res.status(200);
-    res.send(req.session.user || { _error: 'Not logged in' });
+    if (isAuthenticated(req)) {
+        res.status(200);
+        res.send(req.session.user || { error: 'Not logged in' });
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
 });
 
 //log out the user
 //DELETE https://obscure-bayou-38424.herokuapp.com/login
 app.delete('/login', function (req, res) {
-    delete req.session.user;
-    res.status(200);
-    res.send('Logged out');
+    if (isAuthenticated(req)) {
+        delete req.session.user;
+        res.status(200);
+        res.send({ status: 'Logged out' });
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
 });
 
 // adds a record for a specified user ID. All properties are required
 //POST https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
 app.post('/records/:userID', function (req, res) {
-    const record = new Record({
-        userID: req.params.userID,
-        systolic: req.body.systolic,
-        diastolic: req.body.diastolic,
-        heartRate: req.body.heartRate,
-    });
-
-    record.save()
-        .then((result) => {
-            res.status(200);
-            //calculate the age of user and answer how good the health condition is
-            User.findById(req.params.userID).then((result2) => {
-                if (result2 != null) {
-                    const birth = new Date(result2.birthDate);
-                    const postDate = result.createdAt;
-                    let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
-                    res.send(estimateRisk(age, req.body.systolic, req.body.diastolic));
-                } else {
-                    res.status(404);
-                    res.send('User does not exist');
-                }
-            })
-        })
-        .catch((e) => {
-            res.status(500)
+    // we want to make sure the user can only create his/her own records
+    if (isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+        const record = new Record({
+            userID: req.params.userID,
+            systolic: req.body.systolic,
+            diastolic: req.body.diastolic,
+            heartRate: req.body.heartRate,
         });
+
+        record.save()
+            .then((result) => {
+                res.status(200);
+                //calculate the age of user and answer how good the health condition is
+                User.findById(req.params.userID).then((result2) => {
+                    if (result2 != null) {
+                        const birth = new Date(result2.birthDate);
+                        const postDate = result.createdAt;
+                        let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
+                        res.send({
+                            _id: result2._id,
+                            verdict: estimateRisk(age, req.body.systolic, req.body.diastolic)
+                        });
+                    } else {
+                        res.status(404);
+                        res.send({ error: 'User does not exist' });
+                    }
+                })
+            })
+            .catch((e) => {
+                res.status(500);
+                res.send({ error: e });
+            });
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
 });
+
 
 // get a list of records by user ID
 //GET https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
 app.get('/records/:userID', function (req, res) {
-    Record.find({ userID: req.params.userID }).then((result) => {
-        if (result != '') {
+    // we want to make sure the user can only view his/her own records
+    if (isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+        Record.find({ userID: req.params.userID }).then((result) => {
+            if (result != '') {
+                res.status(200);
+                res.send(result);
+            } else {
+                res.status(404);
+                res.send({ error: 'No records found' });
+            }
+        })
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
+});
+
+// get a list of records by user ID
+//GET https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b + object ({"_id": "625ff7cad615a9120d648300"})
+app.delete('/records/:userID', function (req, res) {
+    // we want to make sure the user can only delete his/her own records
+    if (isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+        Record.findByIdAndDelete(req.body._id).then((result) => {
             res.status(200);
             res.send(result);
-        } else {
-            res.status(404);
-            res.send('No records found');
-        }
-    })
+        })
+    } else {
+        res.status(401);
+        res.send({ error: "Unauthorized" });
+    }
 });
 
 // Analysis is based on data from https://pressbooks.library.ryerson.ca/vitalsign/chapter/blood-pressure-ranges/
@@ -229,11 +275,15 @@ function encryptAndSave(user, res) {
         user.save()
             .then((result) => {
                 res.status(200);
-                res.json(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+                res.send(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
             })
             .catch((e) => {
                 res.status(500);
-                res.json(e);
+                res.send({ error: e });
             });
     });
+}
+
+function isAuthenticated(request) {
+    return (request.session.user == null) ? false : true;
 }
