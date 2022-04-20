@@ -46,7 +46,7 @@ Creates a user with a unique email address. A hashed version of the password is 
 
 ## End point */login* method POST<br>
 
-Returns a single user by email address and password (status 200 or a message (status 404)<br>
+Returns a single user by email address and password (status 200 or a message (status 404). Session stores the user object<br>
 
 ### Example of such request<br>
 
@@ -57,6 +57,13 @@ Returns a single user by email address and password (status 200 or a message (st
 >    "password": "password"<br>
 >}<br>
 
+## End point */login* method GET<br>
+
+Returns the current user stored in the session<br>
+
+### Example of such request<br>
+
+>https://obscure-bayou-38424.herokuapp.com/login <br>
 
 ### Response<br>
 >{<br>
@@ -66,6 +73,15 @@ Returns a single user by email address and password (status 200 or a message (st
 >    "lastName": "Surname",<br>
 >    "birthDate": "yyyy-MM-dd",<br>
 >}<br>
+> OR "Not logged in"<br>
+
+## End point */login* method DELETE<br>
+
+Deletes the current user stored in the session<br>
+
+### Response<br>
+
+> "Logged out"<br>
 
 ## End point */records/[user_id]* method GET<br>
 
