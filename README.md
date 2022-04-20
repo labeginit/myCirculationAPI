@@ -1,6 +1,13 @@
 # How to use this API <br>
 
+## Disclamer: All the methods requiring authentication might return
+>{
+>    "error": "Unauthorized"
+>}
+
 ## End point */users* method GET<br>
+
+**Requires authentication!**
 
 Returns a list of all users<br>
 
@@ -12,7 +19,7 @@ Returns a list of all users<br>
 >        "firstName": "Name",<br>
 >        "lastName": "Surname",<br>
 >        "birthDate": "yyyy-MM-dd",<br>
->        "password": "some password",<br>
+>        "password": "some hashed password",<br>
 >        "__v": 0<br>
 >    },<br>
 >    {<br>
@@ -21,7 +28,7 @@ Returns a list of all users<br>
 >        "firstName": "Name",<br>
 >        "lastName": "Surname",<br>
 >        "birthDate": "yyyy-MM-dd",<br>
->        "password": "some password",<br>
+>        "password": "some hashed password",<br>
 >        "__v": 0<br>
 >    }<br>
 >]<br>
@@ -59,6 +66,8 @@ Returns a single user by email address and password (status 200 or a message (st
 
 ## End point */login* method GET<br>
 
+**Requires authentication!**
+
 Returns the current user stored in the session<br>
 
 ### Example of such request<br>
@@ -77,6 +86,8 @@ Returns the current user stored in the session<br>
 
 ## End point */login* method DELETE<br>
 
+**Requires authentication!**
+
 Deletes the current user stored in the session<br>
 
 ### Response<br>
@@ -84,6 +95,8 @@ Deletes the current user stored in the session<br>
 > "Logged out"<br>
 
 ## End point */records/[user_id]* method GET<br>
+
+**Requires authentication!**
 
 Will return all records for a specified user.<br>
 
@@ -118,6 +131,8 @@ Will return all records for a specified user.<br>
 
 ## End point */records/[user_id]* method POST<br>
 
+**Requires authentication!**
+
 Adds a health status record for a specified user. Returns evaluation of current health status of the user.<br>
 
 ### Example of such request<br>
@@ -130,6 +145,23 @@ Adds a health status record for a specified user. Returns evaluation of current 
 >}<br>
 
 ### Response<br>
->"You might need to contact a doctor" <br>
->"Your preassure is ubnormal. Try to calm down and test again." <br>
->Or "Normal blood pressure", etc.<br>
+>{<br>
+>  "_id": "6259887a2d5216427152a740",<br>
+>  "verdict": "You might need to contact a doctor" OR other text<br>
+>}<br>
+
+## End point */records/[user_id]* method DELETE<br>
+
+**Requires authentication!**
+
+Deletes a health status record for a specified user. Returns the deleted record or nothing.<br>
+
+### Example of such request<br>
+
+>https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b' + object <br>
+>{<br>
+>    "_id": "6259887a2d5216427152a740"<br>
+>}<br>
+
+
+
