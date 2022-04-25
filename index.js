@@ -76,15 +76,23 @@ app.get('/users', function (req, res) {
 // response: "62596360a3796f2fb417497b"
 app.post('/register', function (req, res) {
     let user = new User(req.body);
-    User.find({ email: user.email }).then((result) => {
-        if ((result == '') || (result == null)) {
-            // hash the password, replace password in the object with its hashed value, save it in the DB
-            encryptAndSave(user, res);
-        } else {
-            res.status(200);
-            res.json({ error: 'User exists' });
+    user.validate(function (err) {  // validate the user object before sending it to MongoDB
+        if (err) {
+            res.status(500);
+            res.json({ error: err });
         }
-    })
+        else {
+            User.find({ email: user.email }).then((result) => {
+                if ((result == '') || (result == null)) {
+                    // hash the password, replace password in the object with its hashed value, save it in the DB
+                    encryptAndSave(user, res);
+                } else {
+                    res.status(200);
+                    res.json({ error: 'User exists' });
+                }
+            })
+        }
+    });
 });
 
 // get a single user by email address and password
@@ -96,16 +104,10 @@ app.post('/login', function (req, res) {
                 bcrypt.compare(req.body.password, result.password, function (err, result2) {
                     if (result2 == true) {
                         delete result.password; // deletion does not work
-                        const obj = {  // A workaround to avoid sending back the password
-                            _id: result._id,
-                            email: result.email,
-                            firstName: result.firstName,
-                            lastName: result.lastName,
-                            birthDate: result.birthDate
-                        };
+                        result.password = '';
+                        req.session.user = result;  // saving the user info into the session
                         res.status(200);
-                        req.session.user = obj;  // saving the user object in the session
-                        res.send(obj);
+                        res.send(result);
                     } else {
                         res.status(404);
                         res.send({ error: 'User name or Password is incorrect' });
@@ -151,36 +153,39 @@ app.delete('/login', function (req, res) {
 app.post('/records/:userID', function (req, res) {
     // we want to make sure the user can only create his/her own records
     if (isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
-        const record = new Record({
-            userID: req.params.userID,
-            systolic: req.body.systolic,
-            diastolic: req.body.diastolic,
-            heartRate: req.body.heartRate,
-        });
-
-        record.save()
-            .then((result) => {
-                res.status(200);
-                //calculate the age of user and answer how good the health condition is
-                User.findById(req.params.userID).then((result2) => {
-                    if (result2 != null) {
-                        const birth = new Date(result2.birthDate);
-                        const postDate = result.createdAt;
-                        let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
-                        res.send({
-                            _id: result2._id,
-                            verdict: estimateRisk(age, req.body.systolic, req.body.diastolic)
-                        });
-                    } else {
-                        res.status(404);
-                        res.send({ error: 'User does not exist' });
-                    }
-                })
-            })
-            .catch((e) => {
+        const record = new Record(req.body);
+        record.userID = req.params.userID;
+        record.validate(function (err) {  // validate the record object before sending it to MongoDB
+            if (err) {
                 res.status(500);
-                res.send({ error: e });
-            });
+                res.json({ error: err });
+            }
+            else {
+                record.save()
+                    .then((result) => {
+                        res.status(200);
+                        //calculate the age of user and answer how good the health condition is
+                        User.findById(req.params.userID).then((result2) => {
+                            if (result2 != null) {
+                                const birth = new Date(result2.birthDate);
+                                const postDate = result.createdAt;
+                                let age = Math.round(Math.floor(postDate - birth) / (1000 * 60 * 60 * 24 * 365));
+                                res.send({
+                                    _id: result2._id,
+                                    verdict: estimateRisk(age, req.body.systolic, req.body.diastolic)
+                                });
+                            } else {
+                                res.status(404);
+                                res.send({ error: 'User does not exist' });
+                            }
+                        })
+                    })
+                    .catch((e) => {
+                        res.status(500);
+                        res.send({ error: e });
+                    });
+            }
+        })
     } else {
         res.status(401);
         res.send({ error: "Unauthorized" });
