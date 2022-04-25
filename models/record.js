@@ -7,18 +7,28 @@ const recordSchema = new schema({
         required: true
     },
     systolic: {
-        type: Number, max: 250,
+        type: Number,
+        min: [10, 'The value is too low'],
+        max: [250, 'The value is too high'],
         required: true
     },
     diastolic: {
-        type: Number, max: 250,
+        type: Number,
+        min: [10, 'The value is too low'],
+        max: [250, 'The value is too high'],
         required: true
     },
     heartRate: {
-        type: Number, max: 220,
+        type: Number,
+        min: [1, 'The value is too low'],
+        max: [250, 'The value is too high'],
         required: true
     }
-}, { timestamps: true });
+}, {
+    timestamps: true
+}, {
+    collection: 'records'
+});
 
-const Record = mongoose.model('Record', recordSchema) // the collection name in the DB
+const Record = mongoose.model('Record', recordSchema)
 module.exports = Record;

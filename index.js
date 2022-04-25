@@ -75,17 +75,9 @@ app.get('/users', function (req, res) {
 //axios.post('https://obscure-bayou-38424.herokuapp.com/users', user)
 // response: "62596360a3796f2fb417497b"
 app.post('/register', function (req, res) {
-    let user;
-    User.find({ email: req.body.email }).then((result) => {
+    let user = new User(req.body);
+    User.find({ email: user.email }).then((result) => {
         if ((result == '') || (result == null)) {
-            /*   user = new User({
-                   email: req.body.email,
-                   firstName: req.body.firstName,
-                   lastName: req.body.lastName,
-                   birthDate: req.body.birthDate,
-                   password: req.body.password
-               });*/
-            user = new User(req.body);
             // hash the password, replace password in the object with its hashed value, save it in the DB
             encryptAndSave(user, res);
         } else {
@@ -99,17 +91,17 @@ app.post('/register', function (req, res) {
 // POST https://obscure-bayou-38424.herokuapp.com/login
 app.post('/login', function (req, res) {
     if (req.session.user == null) {
-        User.find({ email: req.body.email }).then((result) => {
+        User.findOne({ email: req.body.email }).then((result) => {
             if (result != '') {
-                bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
+                bcrypt.compare(req.body.password, result.password, function (err, result2) {
                     if (result2 == true) {
-                        //   delete result[0].password; // deletion does not work
-                        const obj = {  // A workaround tp avoid sending back the password
-                            _id: result[0]._id,
-                            email: result[0].email,
-                            firstName: result[0].firstName,
-                            lastName: result[0].lastName,
-                            birthDate: result[0].birthDate
+                        delete result.password; // deletion does not work
+                        const obj = {  // A workaround to avoid sending back the password
+                            _id: result._id,
+                            email: result.email,
+                            firstName: result.firstName,
+                            lastName: result.lastName,
+                            birthDate: result.birthDate
                         };
                         res.status(200);
                         req.session.user = obj;  // saving the user object in the session
@@ -284,7 +276,7 @@ function encryptAndSave(user, res) {
             })
             .catch((e) => {
                 res.status(500);
-                res.send({ error: e });
+                res.send({ error: "Something went wrong" });
             });
     });
 }
