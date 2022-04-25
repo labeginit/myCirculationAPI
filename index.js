@@ -78,13 +78,14 @@ app.post('/register', function (req, res) {
     let user;
     User.find({ email: req.body.email }).then((result) => {
         if ((result == '') || (result == null)) {
-            user = new User({
-                email: req.body.email,
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                birthDate: req.body.birthDate,
-                password: req.body.password
-            });
+            /*   user = new User({
+                   email: req.body.email,
+                   firstName: req.body.firstName,
+                   lastName: req.body.lastName,
+                   birthDate: req.body.birthDate,
+                   password: req.body.password
+               });*/
+            user = new User(req.body);
             // hash the password, replace password in the object with its hashed value, save it in the DB
             encryptAndSave(user, res);
         } else {
@@ -97,31 +98,35 @@ app.post('/register', function (req, res) {
 // get a single user by email address and password
 // POST https://obscure-bayou-38424.herokuapp.com/login
 app.post('/login', function (req, res) {
-    User.find({ email: req.body.email }).then((result) => {
-        if (result != '') {
-            bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
-                if (result2 == true) {
-                    delete result[0].password; // deletion does not work
-                    const obj = {
-                        _id: result[0]._id,
-                        email: result[0].email,
-                        firstName: result[0].firstName,
-                        lastName: result[0].lastName,
-                        birthDate: result[0].birthDate
+    if (req.session.user == null) {
+        User.find({ email: req.body.email }).then((result) => {
+            if (result != '') {
+                bcrypt.compare(req.body.password, result[0].password, function (err, result2) {
+                    if (result2 == true) {
+                        //   delete result[0].password; // deletion does not work
+                        const obj = {  // A workaround tp avoid sending back the password
+                            _id: result[0]._id,
+                            email: result[0].email,
+                            firstName: result[0].firstName,
+                            lastName: result[0].lastName,
+                            birthDate: result[0].birthDate
+                        };
+                        res.status(200);
+                        req.session.user = obj;  // saving the user object in the session
+                        res.send(obj);
+                    } else {
+                        res.status(404);
+                        res.send({ error: 'User name or Password is incorrect' });
                     }
-                    res.status(200);
-                    req.session.user = obj;  // saving the user object in the session
-                    res.send(obj);
-                } else {
-                    res.status(404);
-                    res.send({ error: 'User name or Password is incorrect' });
-                }
-            });
-        } else {
-            res.status(404);
-            res.send({ error: 'User name or Password is incorrect' });
-        }
-    })
+                });
+            } else {
+                res.status(404);
+                res.send({ error: 'User name or Password is incorrect' });
+            }
+        })
+    } else {
+        res.send({ error: "Already logged in" });
+    }
 });
 
 // sends the object of the current logged in user or an error
@@ -275,7 +280,7 @@ function encryptAndSave(user, res) {
         user.save()
             .then((result) => {
                 res.status(200);
-                res.send(result._id);   // it didnt work to delete the password from the object, hence sending only the object id
+                res.send({ _id: result._id });   // it didnt work to delete the password from the object, hence sending only the object id
             })
             .catch((e) => {
                 res.status(500);
