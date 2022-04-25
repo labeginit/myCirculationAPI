@@ -25,7 +25,7 @@ app.use(session({
     secret: "625f088260800ba7daa61038",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: 'auto' }
+    cookie: { secure: true }
 }));
 /*
 app.use(function (req, res, next) {
