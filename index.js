@@ -27,12 +27,12 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: 'auto' }
 }));
-
+/*
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-});
+});*/
 
 app.use((_error, req, res, next) => {
     if (_error) {
