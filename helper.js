@@ -1,3 +1,4 @@
+// verifies if the user is logged in
 exports.isAuthenticated = function isAuthenticated(request) {
   return (request.session.user == null) ? false : true;
 }
