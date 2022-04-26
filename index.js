@@ -12,9 +12,8 @@ const rootRoute = require('./api/root');
 const loginRoute = require('./api/login');
 
 require('dotenv/config');
-DB_URL = 'mongodb+srv://circularuser:3y3w7sSAsCTeBVQ@circulation.6n7mu.mongodb.net/circ?retryWrites=true&w=majority'
 
-mongoose.connect(DB_URL, { useUnifiedTopology: true })
+mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true })
     .then((result) => console.log('DB connection established'))
     .then(app.listen(port))
     .catch((e) => console.log(e));

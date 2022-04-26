@@ -2,18 +2,20 @@ const request = require('supertest');
 const app = require('express')();
 const Record = require('../models/record');
 const User = require('../models/user');
-/*
-describe('Test a GET request for /users', function (){
-    it('users should not be empty', function(done){
+require('dotenv/config');
+
+describe('Test a GET request for /users', function () {
+    console.log(process.env.DB_URL);
+    it('users should not be empty', function (done) {
         const response = request(app).get('/users').send();
         request(app)
-        .get('/users')
-        .set('Accept', 'application/json')
-        .expect(200, done);
-        
+            .get('/users')
+            .set('Accept', 'application/json')
+            .expect(200, done);
+
     });
 });
-
+/*
 describe('Test a POST request for /users', function(){
     it('response should contain an object and status code 200', function(done){
         const response = request(app).post('/users').send(
