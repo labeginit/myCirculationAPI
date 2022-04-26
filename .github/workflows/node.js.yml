@@ -11,8 +11,7 @@ on:
 
 jobs:
   build:
-    env: 
-      DB_URL: ${{ secrets.DB_URL }}
+   
     runs-on: ubuntu-latest
 
     strategy:
