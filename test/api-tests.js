@@ -11,7 +11,7 @@ describe('Test a GET request for /users', function () {
         request(app)
             .get('/users')
             .set('Accept', 'application/json')
-            .expect(200, done);
+            .expect(404, done);
 
     });
 });
