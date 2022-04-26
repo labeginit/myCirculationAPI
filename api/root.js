@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 8;
+const hlp = require('../helper');
 
 // End points
 router.get('/', (req, res) => {
@@ -37,8 +38,7 @@ router.post('/register', function (req, res) {
 // get a list of users
 // for testing purpose
 router.get('/users', function (req, res) {
-  console.log(isAuthenticated(req));
-  if (isAuthenticated(req)) {
+  if (hlp.isAuthenticated(req)) {
     User.find()
       .then((result) => {
         res.status(200);
@@ -67,10 +67,6 @@ function encryptAndSave(user, res) {
         res.send({ error: "Something went wrong" });
       });
   });
-}
-
-function isAuthenticated(request) {
-  return (request.session.user == null) ? false : true;
 }
 
 module.exports = router;
