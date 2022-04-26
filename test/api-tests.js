@@ -14,7 +14,7 @@ describe('POST request to /register', function () {
                 lastName: 'Surname',
                 birthDate: '2000-07-06',
                 password: 'password'
-            })).expect(200, done);
+            })).expect(200);
 
         assert(response._data._doc.email == 'lili@gmail.com');
         done();
@@ -28,7 +28,7 @@ describe('POST request to /login', function () {
             {
                 email: 'lili@gmail.com',
                 password: 'password'
-            }).expect(200, done);
+            }).expect(200);
         done();
     });
 });
