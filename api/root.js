@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Record = require('../models/record');
 const bcrypt = require('bcrypt');
 const saltRounds = 8;
 const hlp = require('../helper');
@@ -47,6 +48,33 @@ router.get('/users', function (req, res) {
         res.status(500);
         res.send(e);
       });
+  } else {
+    res.status(401);
+    res.send({ error: "Unauthorized" });
+  }
+});
+
+router.get('/stats', function (req, res) {
+  if (hlp.isAuthenticated(req)) {
+    let totalRecordsCount;
+    let userRecordsCount;
+    Record.find().then((result) => {
+      let records = [];
+      for (let record in result) {
+        records.push(record);
+      }
+      totalRecordsCount = records.length;
+
+      Record.find({ userID: req.session.user._id }).then((result) => {
+        let records = [];
+        for (let record in result) {
+          records.push(record);
+        }
+        userRecordsCount = records.length;
+        res.send({ totalRecordsCount, userRecordsCount });
+      })
+    })
+
   } else {
     res.status(401);
     res.send({ error: "Unauthorized" });
