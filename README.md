@@ -38,7 +38,7 @@ Returns a list of all users<br>
 Creates a user with a unique email address. A hashed version of the password is saved in the DB<br>
 
 ### Example of such request<br>
->lhttps://obscure-bayou-38424.herokuapp.com/register + object <br>
+>https://obscure-bayou-38424.herokuapp.com/register + object <br>
 >   {<br>
 >        email: "xxxx@email",<br>
 >        firstName: "firstName",<br>
@@ -50,6 +50,20 @@ Creates a user with a unique email address. A hashed version of the password is 
 ### Response<br>
 >"62596360a3796f2fb417497b"   - the ID of the newly created record<br>
 
+
+## End point */stats* method GET<br>
+
+Creates a user with a unique email address. A hashed version of the password is saved in the DB<br>
+
+### Example of such request<br>
+>https://obscure-bayou-38424.herokuapp.com/stats <br>
+
+
+### Response<br>
+>{<br>
+    "totalRecordsCount": 28,<br>
+    "userRecordsCount": 8<br>
+}<br>
 
 ## End point */login* method POST<br>
 
