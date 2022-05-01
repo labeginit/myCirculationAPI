@@ -56,7 +56,7 @@ router.get('/:userID', function (req, res) {
   // we want to make sure the user can only view his/her own records
   if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
     Record.find({ userID: req.params.userID }).then((result) => {
-      if (result != '') {
+      if ((result != '') && (result != null)) {
         res.status(200);
         res.send(result);
       } else {
