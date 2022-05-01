@@ -9,7 +9,7 @@ const hlp = require('../helper');
 router.post('/', function (req, res) {
   if (req.session.user == null) {
     User.findOne({ email: req.body.email }).then((result) => {
-      if (result != '') {
+      if ((result != '') && (result != null)) {
         bcrypt.compare(req.body.password, result.password, function (err, result2) {
           if (result2 == true) {
             delete result.password; // deletion does not work
