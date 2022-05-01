@@ -53,7 +53,7 @@ Creates a user with a unique email address. A hashed version of the password is 
 
 ## End point */stats* method GET<br>
 
-Creates a user with a unique email address. A hashed version of the password is saved in the DB<br>
+Returnsan a JSON with two values: the total count of records in the DB and the records count of the logged in user<br>
 
 ### Example of such request<br>
 >https://obscure-bayou-38424.herokuapp.com/stats <br>
