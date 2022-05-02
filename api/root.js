@@ -59,22 +59,12 @@ router.get('/stats', function (req, res) {
     let totalRecordsCount;
     let userRecordsCount;
     Record.find().then((result) => {
-      let records = [];
-      for (let record in result) {
-        records.push(record);
-      }
-      totalRecordsCount = records.length;
-
+      totalRecordsCount = result.length;
       Record.find({ userID: req.session.user._id }).then((result) => {
-        let records = [];
-        for (let record in result) {
-          records.push(record);
-        }
-        userRecordsCount = records.length;
+        userRecordsCount = result.length;
         res.send({ totalRecordsCount, userRecordsCount });
       })
     })
-
   } else {
     res.status(401);
     res.send({ error: "Unauthorized" });
