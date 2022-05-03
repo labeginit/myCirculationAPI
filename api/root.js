@@ -39,36 +39,36 @@ router.post('/register', function (req, res) {
 // get a list of users
 // for testing purpose
 router.get('/users', function (req, res) {
-  if (hlp.isAuthenticated(req)) {
-    User.find()
-      .then((result) => {
-        res.status(200);
-        res.send(result);
-      }).catch((e) => {
-        res.status(500);
-        res.send(e);
-      });
-  } else {
-    res.status(401);
-    res.send({ error: "Unauthorized" });
-  }
+  //if (hlp.isAuthenticated(req)) {
+  User.find()
+    .then((result) => {
+      res.status(200);
+      res.send(result);
+    }).catch((e) => {
+      res.status(500);
+      res.send(e);
+    });
+  /* } else {
+     res.status(401);
+     res.send({ error: "Unauthorized" });
+   }*/
 });
 
 router.get('/stats', function (req, res) {
-  if (hlp.isAuthenticated(req)) {
-    let totalRecordsCount;
-    let userRecordsCount;
-    Record.find().then((result) => {
-      totalRecordsCount = result.length;
-      Record.find({ userID: req.session.user._id }).then((result) => {
-        userRecordsCount = result.length;
-        res.send({ totalRecordsCount, userRecordsCount });
-      })
+  // if (hlp.isAuthenticated(req)) {
+  let totalRecordsCount;
+  let userRecordsCount;
+  Record.find().then((result) => {
+    totalRecordsCount = result.length;
+    Record.find({ userID: req.session.user._id }).then((result) => {
+      userRecordsCount = result.length;
+      res.send({ totalRecordsCount, userRecordsCount });
     })
-  } else {
-    res.status(401);
-    res.send({ error: "Unauthorized" });
-  }
+  })
+  /* } else {
+     res.status(401);
+     res.send({ error: "Unauthorized" });
+   }*/
 });
 
 function encryptAndSave(user, res) {

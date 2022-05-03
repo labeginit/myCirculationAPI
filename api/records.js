@@ -8,7 +8,8 @@ const hlp = require('../helper');
 //POST https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
 router.post('/:userID', function (req, res) {
   // we want to make sure the user can only create his/her own records
-  if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  //if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  if (req.params.userID == req.session.user._id) {
     let record = new Record(req.body);
     record.userID = req.params.userID;
     record.validate(function (err) {  // validate the record object before sending it to MongoDB
@@ -54,7 +55,8 @@ router.post('/:userID', function (req, res) {
 //GET https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b
 router.get('/:userID', function (req, res) {
   // we want to make sure the user can only view his/her own records
-  if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  //if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  if (req.params.userID == req.session.user._id) {
     Record.find({ userID: req.params.userID }).then((result) => {
       if ((result != '') && (result != null)) {
         res.status(200);
@@ -74,7 +76,8 @@ router.get('/:userID', function (req, res) {
 //GET https://obscure-bayou-38424.herokuapp.com/records/62596360a3796f2fb417497b + object ({"_id": "625ff7cad615a9120d648300"})
 router.delete('/:userID', function (req, res) {
   // we want to make sure the user can only delete his/her own records
-  if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  //if (hlp.isAuthenticated(req) && (req.params.userID == req.session.user._id)) {
+  if (req.params.userID == req.session.user._id) {
     Record.findByIdAndDelete(req.body._id).then((result) => {
       res.status(200);
       res.send(result);
