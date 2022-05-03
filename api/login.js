@@ -35,26 +35,26 @@ router.post('/', function (req, res) {
 // sends the object of the current logged in user or an error
 //GET https://obscure-bayou-38424.herokuapp.com/login
 router.get('/', function (req, res) {
-  if (hlp.isAuthenticated(req)) {
-    res.status(200);
-    res.send(req.session.user || { error: 'Not logged in' });
-  } else {
-    res.status(401);
-    res.send({ error: "Unauthorized" });
-  }
+  // if (hlp.isAuthenticated(req)) {
+  res.status(200);
+  res.send(req.session.user || { error: 'Not logged in' });
+  /*  } else {
+      res.status(401);
+      res.send({ error: "Unauthorized" });
+    }*/
 });
 
 //log out the user
 //DELETE https://obscure-bayou-38424.herokuapp.com/login
 router.delete('/', function (req, res) {
-  if (hlp.isAuthenticated(req)) {
-    delete req.session.user;
-    res.status(200);
-    res.send({ status: 'Logged out' });
-  } else {
-    res.status(401);
-    res.send({ error: "Unauthorized" });
-  }
+  //  if (hlp.isAuthenticated(req)) {
+  delete req.session.user;
+  res.status(200);
+  res.send({ status: 'Logged out' });
+  /*  } else {
+      res.status(401);
+      res.send({ error: "Unauthorized" });
+    }*/
 });
 
 module.exports = router;
