@@ -41,7 +41,7 @@ app.use(session({
        },*/
     store: MongoStore.create({
         mongoUrl: DB_URL,
-        ttl: 24 * 1000 * 60 * 60,
+        ttl: 24 * 3600,  // 1 day
         touchAfter: 24 * 3600,
         autoRemove: 'native'
     })
