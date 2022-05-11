@@ -20,14 +20,26 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
     .catch((e) => console.log(e));
 
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
+app.use(
+    cors({
+        origin: "https://calm-badlands-26710.herokuapp.com",
+        credentials: true
+    })
+);
 app.use(cookieParser());
 app.use(session({
     secret: "625f088260800ba7daa61038",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: 'auto' }  // do not change to anything else! Session stops working
-}));
+    //cookie: { secure: 'auto' }  // do not change to anything else! Session stops working
+    cookie: {
+        maxAge: 24 * 1000 * 60 * 60,
+        sameSite: 'none',
+        secure: true
+    }
+})
+);
 
 app.use((_error, req, res, next) => {
     if (_error) {
