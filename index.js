@@ -6,6 +6,7 @@ const mongoose = require('mongoose');  //ODM (object document mapping) lib
 const cors = require('cors');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const MongoStore = require('connect-mongo');
 
 const recordsRoute = require('./api/records');
 const rootRoute = require('./api/root');
@@ -33,11 +34,17 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     //cookie: { secure: 'auto' }  // do not change to anything else! Session stops working
-    cookie: {
-        maxAge: 24 * 1000 * 60 * 60,
-        sameSite: 'none',
-        secure: true
-    }
+    /*   cookie: {
+           maxAge: 24 * 1000 * 60 * 60,
+           sameSite: 'none',
+           secure: true
+       },*/
+    store: MongoStore.create({
+        mongoUrl: DB_URL,
+        ttl: 24 * 1000 * 60 * 60,
+        touchAfter: 24 * 3600,
+        autoRemove: 'native'
+    })
 })
 );
 
