@@ -33,12 +33,6 @@ app.use(session({
     secret: "625f088260800ba7daa61038",
     resave: false,
     saveUninitialized: false,
-    //cookie: { secure: 'auto' }  // do not change to anything else! Session stops working
-    /*   cookie: {
-           maxAge: 24 * 1000 * 60 * 60,
-           sameSite: 'none',
-           secure: true
-       },*/
     store: MongoStore.create({
         mongoUrl: DB_URL,
         ttl: 24 * 3600,  // 1 day
