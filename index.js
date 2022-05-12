@@ -22,12 +22,12 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
 
 app.use(express.json());
 app.use(cors());
-app.use(
+/*app.use(
     cors({
         origin: "https://calm-badlands-26710.herokuapp.com",
         credentials: true
     })
-);
+);*/
 app.use(cookieParser());
 app.use(session({
     secret: "625f088260800ba7daa61038",
