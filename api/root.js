@@ -54,13 +54,13 @@ router.get('/users', function (req, res) {
    }*/
 });
 
-router.get('/stats', function (req, res) {
+router.get('/stats/:userID', function (req, res) {
   // if (hlp.isAuthenticated(req)) {
   let totalRecordsCount;
   let userRecordsCount;
   Record.find().then((result) => {
     totalRecordsCount = result.length;
-    Record.find({ userID: req.session.user._id }).then((result) => {
+    Record.find({ userID: req.params.userID }).then((result) => {
       userRecordsCount = result.length;
       res.send({ totalRecordsCount, userRecordsCount });
     })
