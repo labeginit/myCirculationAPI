@@ -21,7 +21,6 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
     .catch((e) => console.log(e));
 
 app.use(express.json());
-//app.use(cors());
 app.use(
     cors({
         //      origin: "https://calm-badlands-26710.herokuapp.com",

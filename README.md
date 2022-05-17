@@ -51,12 +51,12 @@ Creates a user with a unique email address. A hashed version of the password is 
 >"62596360a3796f2fb417497b"   - the ID of the newly created record<br>
 
 
-## End point */stats* method GET<br>
+## End point */stats/[user_id]* method GET<br>
 
 Returnsan a JSON with two values: the total count of records in the DB and the records count of the logged in user<br>
 
 ### Example of such request<br>
->https://obscure-bayou-38424.herokuapp.com/stats <br>
+>https://obscure-bayou-38424.herokuapp.com/stats/62596360a3796f2fb417497b <br>
 
 
 ### Response<br>
