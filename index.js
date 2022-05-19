@@ -29,7 +29,7 @@ app.use(
     })
 );
 */
-const whitelist = ["https://obscure-bayou-38424.herokuapp.com"]
+const whitelist = ["https://desolate-stream-78141.herokuapp.com"]
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
