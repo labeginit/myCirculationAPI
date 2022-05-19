@@ -21,12 +21,27 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
     .catch((e) => console.log(e));
 
 app.use(express.json());
+/*
 app.use(
     cors({
         origin: "https://obscure-bayou-38424.herokuapp.com/",
         credentials: true
     })
 );
+*/
+const whitelist = ["https://obscure-bayou-38424.herokuapp.com"]
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 app.use(session({
     secret: "625f088260800ba7daa61038",
