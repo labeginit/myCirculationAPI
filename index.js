@@ -21,14 +21,7 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
     .catch((e) => console.log(e));
 
 app.use(express.json());
-/*
-app.use(
-    cors({
-        origin: "https://obscure-bayou-38424.herokuapp.com/",
-        credentials: true
-    })
-);
-*/
+
 const whitelist = ["https://desolate-stream-78141.herokuapp.com"]
 const corsOptions = {
     origin: function (origin, callback) {
