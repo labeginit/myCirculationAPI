@@ -23,7 +23,7 @@ mongoose.connect(DB_URL, { useUnifiedTopology: true })
 app.use(express.json());
 app.use(
     cors({
-        //      origin: "https://calm-badlands-26710.herokuapp.com",
+        origin: "https://desolate-stream-78141.herokuapp.com/",
         credentials: true
     })
 );
